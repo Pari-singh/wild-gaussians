@@ -297,6 +297,7 @@ class UncertaintyModel(nn.Module):
         return self.img_norm_mean.device
 
     def forward(self, image: Tensor, _cache_entry=None):
+        # import pdb; pdb.set_trace()
         return self._forward_uncertainty_features(image, _cache_entry=_cache_entry)
 
     def setup_data(self, train_dataset, test_dataset):
@@ -331,6 +332,7 @@ class UncertaintyModel(nn.Module):
         return torch.min(dino_part, msssim_part)
 
     def _compute_losses(self, gt, prediction, prefix='', _cache_entry=None):
+        # import pdb; pdb.set_trace()
         uncertainty = self(self._scale_input(gt, self.config.uncertainty_dino_max_size), _cache_entry=_cache_entry)
         log_uncertainty = torch.log(uncertainty)
         # _dssim_go = dssim_go(gt, prediction, size_average=False).unsqueeze(1).clamp_max(self.config.uncertainty_dssim_clip_max)
@@ -1654,6 +1656,7 @@ class WildGaussians(Method):
             self.model.load_state_dict(load_state_dict)
 
     def _setup_train(self, train_dataset: Dataset, load_state_dict):
+        # import pdb; pdb.set_trace()
         points3D_xyz = train_dataset["points3D_xyz"]
         points3D_rgb = train_dataset["points3D_rgb"]
         assert points3D_xyz is not None, "Train points3D_xyz are required for training"

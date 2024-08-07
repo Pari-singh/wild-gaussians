@@ -64,6 +64,9 @@ def load_phototourism_dataset(path: Union[Path, str], split: str, use_nerfw_spli
     dataset["metadata"]["viewer_initial_pose"] = viewer_pose
 
     dataset_len = len(dataset["image_paths"])
+
+    import pdb
+    pdb.set_trace()
     if split_list is not None:
         indices = np.array(
             [i for i, x in enumerate(dataset["image_paths"]) if Path(x).name in split_list]

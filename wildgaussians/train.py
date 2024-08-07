@@ -10,6 +10,7 @@ from typing import Dict, cast, Optional, List, Tuple
 from tqdm import tqdm
 from pathlib import Path
 import numpy as np
+import pdb
 import click
 from .types import FrozenSet, Method, Dataset, DatasetFeature, EvaluationProtocol, Logger
 from .evaluation import render_all_images, evaluate, compute_metrics, DefaultEvaluationProtocol
@@ -224,6 +225,7 @@ def train_command(
     method_info = WildGaussians.get_method_info()
     features: FrozenSet[DatasetFeature] = frozenset({"color", "points3D_xyz"})
     if dataset_type == "phototourism":
+        pdb.set_trace()
         assert config_overrides["config"] == "phototourism.yml"
         from .datasets.phototourism import load_phototourism_dataset, download_phototourism_dataset, NerfWEvaluationProtocol
 
@@ -234,6 +236,17 @@ def train_command(
             download_dataset_fn=download_phototourism_dataset,
             evaluation_protocol=evaluation_protocol.get_name(),
         )
+    elif dataset_type == "blender":
+        from .datasets.blender import load_blender_dataset, download_blender_dataset, NerfWEvaluationProtocol
+
+        evaluation_protocol = NerfWEvaluationProtocol()
+        load_dataset_fn = partial(
+            load_dataset,
+            load_dataset_fn=load_blender_dataset,
+            download_dataset_fn=download_blender_dataset,
+            evaluation_protocol=evaluation_protocol.get_name(),
+        )
+
     else:
         if dataset_type == "nerfonthego":
             assert config_overrides["config"] == "nerfonthego.yml"
