@@ -297,7 +297,6 @@ class UncertaintyModel(nn.Module):
         return self.img_norm_mean.device
 
     def forward(self, image: Tensor, _cache_entry=None):
-        # import pdb; pdb.set_trace()
         return self._forward_uncertainty_features(image, _cache_entry=_cache_entry)
 
     def setup_data(self, train_dataset, test_dataset):
@@ -1672,6 +1671,8 @@ class WildGaussians(Method):
             train_dataset["points3D_xyz"] = np.concatenate((points3D_xyz, skybox))
             train_dataset["points3D_rgb"] = np.concatenate((points3D_rgb, skycolor))
             opacities = np.concatenate((opacities, 1.0 * np.ones(skybox.shape[0])))
+        else:
+            train_dataset = train_dataset.copy()
 
         # import trimesh
         # _ = trimesh.PointCloud(skybox).export("/tmp/back.ply")

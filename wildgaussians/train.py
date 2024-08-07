@@ -238,7 +238,7 @@ def train_command(
         )
     elif dataset_type == "blender":
         from .datasets.blender import load_blender_dataset, download_blender_dataset, NerfWEvaluationProtocol
-
+        assert config_overrides["config"] == "blender.yml"
         evaluation_protocol = NerfWEvaluationProtocol()
         load_dataset_fn = partial(
             load_dataset,
