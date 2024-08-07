@@ -1,0 +1,14 @@
+*.swp
+.*.swo
+**/__pycache__
+cu-config.yml
+dist/
+*.egg-info
+.conda/
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+nerfbaselines/_version.py
+.vscode/launch.json
+.vim/
+build/

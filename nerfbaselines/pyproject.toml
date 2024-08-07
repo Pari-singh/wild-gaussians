@@ -1,0 +1,154 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "nerfbaselines/_version.py"
+
+[project]
+name = "nerfbaselines"
+authors = [
+  { name="Jonas Kulhanek", email="jonas.kulhanek@live.com" },
+]
+description = "Reproducible evaluation of NeRF and 3DGS methods"
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text="MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "opencv-python>=4.6.0.66",
+    "typing-extensions>=4.4.0",
+    "wandb>=0.13.3",
+    "click>=8.0.0",
+    "numpy>=1.19.5,<2.0.0",
+    "tqdm>=4.61.1",
+    "Pillow>=8.2.0",
+    "matplotlib>=3.4.2",
+    "requests>=2.25.1",
+    "gdown>=4.7.1",
+    "tensorboard>=2.5.0",
+    "mediapy>=1.1.2",
+    'splines>=0.3.1',
+    "scipy",
+    'importlib-metadata>=6.0.0; python_version < "3.10"',
+    # Viwer dependencies
+    'viser<0.2.0',
+]
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://jkulhanek.com/nerfbaselines"
+Source = "https://github.com/jkulhanek/nerfbaselines"
+Homepage = "https://jkulhanek.com/nerfbaselines"
+"Bug Tracker" = "https://github.com/jkulhanek/nerfbaselines/issues"
+
+[project.optional-dependencies]
+viewer = [
+    'viser<0.2.0',
+]
+web = [
+    'jinja2==3.1.4',
+    'livereload==2.7.0'
+]
+dev = [
+    'torch',
+    'torchmetrics',
+    'jax',
+    'pytest==7.4.4',
+    'typeguard==4.2.1',
+    'dm-pix',
+    # Viewer
+    'viser<0.2.0',
+    # Web
+    'jinja2==3.1.4',
+    'livereload==2.7.0'
+]
+
+[project.scripts]
+nerfbaselines = "nerfbaselines.__main__:main"
+
+[tool.pytest.ini_options]
+addopts = '--typeguard-packages nerfbaselines'
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["nerfbaselines*"]
+
+[tool.black]
+line-length = 200
+
+[tool.pyright]
+ignore = [
+  "nerfbaselines/methods/_impl/**/*",
+]
+exclude = ["**/node_modules",
+    "**/__pycache__",
+    "**/build",
+    "nerfbaselines/viewer/nerfstudio.py",
+    "nerfbaselines/methods/camp_zipnerf.py",
+    "nerfbaselines/methods/gaussian_splatting.py",
+    "nerfbaselines/methods/instant_ngp.py",
+    "nerfbaselines/methods/mip_splatting.py",
+    "nerfbaselines/methods/multinerf.py",
+    "nerfbaselines/methods/nerf.py",
+    "nerfbaselines/methods/nerfstudio.py",
+    "nerfbaselines/methods/tensorf.py",
+    "nerfbaselines/methods/gaussian_opacity_fields.py",
+    "nerfbaselines/methods/nerfw_reimpl.py",
+    "nerfbaselines/methods/kplanes.py",
+    "nerfbaselines/methods/nerfonthego.py",
+    "nerfbaselines/methods/seathru_nerf.py",
+    "nerfbaselines/methods/tetranerf.py",
+    "nerfbaselines/methods/kplanes.py",
+    "nerfbaselines/methods/trips/**/*",
+    "scripts/**/*",
+]
+defineConstant = { DEBUG = true }
+
+reportMissingImports = "warning"
+reportMissingTypeStubs = false
+reportPrivateImportUsage = false
+pythonVersion = "3.11"
+pythonPlatform = "Linux"
+
+[tool.ruff]
+select = [
+    "E",  # pycodestyle errors.
+    "F",  # Pyflakes rules.
+    "PLC",  # Pylint convention warnings.
+    "PLE",  # Pylint errors.
+    "PLR",  # Pylint refactor recommendations.
+    "PLW",  # Pylint warnings.
+]
+ignore = [
+    "E501",  # Line too long.
+    "PLR2004",  # Magic value used in comparison.
+    "PLR0915",  # Too many statements.
+    "PLR0913",  # Too many arguments.
+    "PLC0414",  # Import alias does not rename variable. (this is used for exporting names)
+    "PLC1901",  # Use falsey strings.
+    "PLR0911",  # Too many return statements.
+    "PLR0912",  # Too many branches.
+    "PLW0603",  # Globa statement updates are discouraged.
+    "PLW2901",  # For loop variable overwritten.
+    "PLR1714",  # Repeated equality comparison.
+]
+
+[tool.cu]
+defaults = ["$CU_DEFAULT_CONFIGS/default.yml"]
+include = [["//", "source"]]
+
+[tool.cu.plugins.conda]
+python = "3.11"
+type = "cluster_utils.plugins.SetupConda"
+install-script = """
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install 'jax[cpu]'
+pip install -e "$JOBDIR"'/source[extras]'
+"""
