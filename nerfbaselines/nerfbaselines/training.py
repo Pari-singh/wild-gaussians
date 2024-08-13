@@ -444,7 +444,7 @@ class Trainer:
                     log_metrics(logger, acc_metrics, prefix="train/", step=self.step)
 
                 # Visualize and save
-                import pdb; pdb.set_trace()
+                
                 if self.step in self.save_iters:
                     self.save()
                 if self.step in self.eval_few_iters:
@@ -503,13 +503,13 @@ class Trainer:
 @click.option("--output", type=str, default="output_lego_nosky")
 @click.option("--logger", type=click.Choice(["none", "wandb", "tensorboard", "wandb,tensorboard"]), default="tensorboard", help="Logger to use. Defaults to tensorboard.")
 @click.option("--verbose", "-v", is_flag=True)
-@click.option("--save-iters", type=IndicesClickType(), default=Indices([-1]), help="When to save the model")
+@click.option("--save-iters", type=IndicesClickType(), default=Indices([10000]), help="When to save the model")
 @click.option("--eval-few-iters", type=IndicesClickType(), default=Indices.every_iters(2_000), help="When to evaluate on few images")
 @click.option("--eval-all-iters", type=IndicesClickType(), default=Indices([-1]), help="When to evaluate all images")
 @click.option("--backend", "backend_name", type=click.Choice(backends.ALL_BACKENDS), default=os.environ.get("NERFBASELINES_BACKEND", None))
 @click.option("--disable-output-artifact", "generate_output_artifact", help="Disable producing output artifact containing final model and predictions.", default=None, flag_value=False, is_flag=True)
 @click.option("--force-output-artifact", "generate_output_artifact", help="Force producing output artifact containing final model and predictions.", default=None, flag_value=True, is_flag=True)
-@click.option("--set", "config_overrides", help="Override a parameter in the method.", type=SetParamOptionType(), multiple=True, default=None)
+@click.option("--set", "config_overrides", help="Override a parameter in the method.", type=str, default="")
 @handle_cli_error
 def train_command(
     method_name,
@@ -596,9 +596,14 @@ def train_command(
                     dataset_overrides.update(config_overrides or {})
                     config_overrides = dataset_overrides
                 del dataset_overrides
-
-                if train_dataset['metadata']['name'] == "blender":
-                    config_file = "/media/fast_data/wild-gaussians/wildgaussians/configs/blender.yml"
+            
+                config_file = None
+                import pdb; pdb.set_trace()
+                #if train_dataset['metadata']['name'] == "blender":
+                    #config_file = "/media/data_1/paridhi/wild-gaussians/wildgaussians/configs/blender.yml"
+                if train_dataset['metadata']['name'] in ["blender", "phototourism", "colmap"] and type(config_overrides)==str:
+                    config_file = config_overrides
+                if config_file:
                     try:
                         with open(config_file, 'r') as f:
                             config_overrides = yaml.safe_load(f)

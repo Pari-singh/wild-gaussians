@@ -944,7 +944,7 @@ class GaussianModel(nn.Module):
         assert getattr(self.config, "appearance_model_2D", "disabled") == "disabled", "2D appearance models are not supported"
         assert getattr(self.config, "use_background_model", False) is False, "Background model is not supported"
         assert getattr(self.config, "uncertainty_preserve_sky", False) is False, "Flag uncertainty_preserve_sky is not supported"
-
+        import pdb; pdb.set_trace()
         if self.config.uncertainty_mode != "disabled":
             self.uncertainty_model = UncertaintyModel(self.config)
         else:
