@@ -8,7 +8,6 @@ position_lr_final: 0.0000016
 position_lr_init: 0.00016
 scaling_lr: 0.005
 sh_degree: 3
-use_gof_abs_gradient: False
 
 uncertainty_warmup_start: 35000
 uncertainty_warmup_iters: 5000
